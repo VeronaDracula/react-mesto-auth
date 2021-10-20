@@ -1,0 +1,9 @@
+.popup__content {
+    padding: 27px 22px 25px 22px;
+}
+
+@media screen and (min-width: 1024px) {
+    .popup__content {
+        padding: 34px 36px 37px 36px;
+    }
+}
