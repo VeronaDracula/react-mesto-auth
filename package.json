@@ -39,5 +39,5 @@
   "devDependencies": {
     "gh-pages": "^3.2.3"
   },
-  "homepage": "https://veronadracula.github.io/mesto-react/"
+  "homepage": "https://veronadracula.github.io/react-mesto-auth/"
 }
