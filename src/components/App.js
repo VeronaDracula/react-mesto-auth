@@ -1,15 +1,19 @@
 import React from 'react';
 
+
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
+import Login from './Login.js';
+import Register from './Register.js';
 import AddPlacePopup from './AddPlacePopup.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import PopupDeleteCard from './PopupDeleteCard.js';
 import ImagePopup from './ImagePopup.js';
+import InfoTooltip from './InfoTooltip.js';
 import {api} from "../utils/Api";
 
 
@@ -22,6 +26,8 @@ function App() {
     const [selectedCard, setSelectedCard] = React.useState(emptyCard);
     const [cards, setCards] = React.useState([]);
     const [currentUser, setCurrentUser] = React.useState({});
+
+    const [loggedIn, setLoggedIn] =React.useState(false);
 
     //получение данных пользователя
     React.useEffect(() => {
@@ -203,6 +209,10 @@ function App() {
                 <div className="page__content">
                     <Header/>
 
+                    <Login/>
+
+                    <Register/>
+
                     <Main onEditProfile={handleEditProfileClick}
                           onAddPlace={handleAddPlaceClick}
                           onEditAvatar={handleEditAvatarClick}
@@ -215,6 +225,8 @@ function App() {
                     />
 
                     <Footer/>
+
+                    <InfoTooltip onClose={closeAllPopups}/>
 
                     <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
 

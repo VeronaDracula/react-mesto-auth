@@ -1,0 +1,16 @@
+.start-page__login-link {
+    font-family: Inter, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 17px;
+    color: #FFFFFF;
+    text-decoration: none;
+    padding: 0;
+    margin: 15px 0 0 0;
+}
+
+.start-page__login-link:hover {
+    opacity: 0.6;
+    cursor: pointer;
+}
