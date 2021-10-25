@@ -3,7 +3,6 @@ import React from 'react';
 function ImagePopup(props) {
     return (
         <section className={props.card.link !== ''  ? 'popup popup_type_photo popup_is-opened' : 'popup popup_type_photo'}>
-
             <div className="popup-photo">
                 <button className="popup__close page__button" onClick={props.onClose}></button>
                 <figure className="popup-photo__image-container">

@@ -1,0 +1,10 @@
+.popup__content_type_info-login {
+    text-align: center;
+    padding: 50px 18px 50px 18px;
+}
+
+@media screen and (min-width: 1024px) {
+    .popup__content_type_info-login {
+        padding: 60px 36px 60px 36px;
+    }
+}

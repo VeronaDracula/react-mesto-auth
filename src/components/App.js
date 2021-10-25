@@ -1,8 +1,12 @@
 import React from 'react';
-
+import { Route, Switch } from 'react-router-dom';
 
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 
+import imgLoginYes from '../images/login-yes.png';
+import imgLoginNo from '../images/login-no.png';
+
+import ProtectedRoute from "./ProtectedRoute";
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -15,6 +19,7 @@ import PopupDeleteCard from './PopupDeleteCard.js';
 import ImagePopup from './ImagePopup.js';
 import InfoTooltip from './InfoTooltip.js';
 import {api} from "../utils/Api";
+import {apiAuth} from "../utils/AuthApi";
 
 
 function App() {
@@ -28,6 +33,10 @@ function App() {
     const [currentUser, setCurrentUser] = React.useState({});
 
     const [loggedIn, setLoggedIn] =React.useState(false);
+
+    const [infoTooltipImg, setInfoTooltipImg] =React.useState(imgLoginYes);
+    const [infoTooltipText, setInfoTooltipText] =React.useState('Вы успешно зарегистрировались!');
+    const [popupInfoTooltipOpen, setPopupInfoTooltip] =React.useState(false);
 
     //получение данных пользователя
     React.useEffect(() => {
@@ -60,12 +69,19 @@ function App() {
         setSelectedCard(card);
     }
 
+    function handleInfoTooltipOpen() {
+        setPopupInfoTooltip(true);
+        setInfoTooltipImg(imgLoginYes);
+        setInfoTooltipText('Вы успешно зарегистрировались!');
+    }
+
     function closeAllPopups() {
         setIsEditProfilePopupOpen(false);
         setIsEditAvatarPopupOpen(false);
         setIsAddPlacePopupOpen(false);
-        setIsDeleteCardPopupOpen(false)
-        setSelectedCard(emptyCard)
+        setIsDeleteCardPopupOpen(false);
+        setSelectedCard(emptyCard);
+        setPopupInfoTooltip(false);
     }
 
     //закрытие попапа по Esc
@@ -126,6 +142,30 @@ function App() {
                 buttonState(buttonText, false)
             });
     }
+
+    //регистрация
+    function handleRegister({email, password}) {
+        apiAuth
+            .register({email, password})
+            .then(response => {
+                console.log(response);
+                handleInfoTooltipOpen();
+            })
+            .catch(err => {
+                console.log(err);
+                handleInfoTooltipOpen();
+                setInfoTooltipImg(imgLoginNo);
+                setInfoTooltipText('Что-то пошло не так!\n' + 'Попробуйте ещё раз.');
+            })
+
+    }
+
+    //вход
+    function handleLogin({email, password}){
+        console.log(email, password)
+
+    }
+
 
     //запрос данных карточки
     React.useEffect(() => {
@@ -207,26 +247,48 @@ function App() {
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
                 <div className="page__content">
-                    <Header/>
+                    <Switch>
+                        <Route path="/sign-up">
+                            <Header text="Войти" link="/sign-in"/>
+                            <Register onRegister={handleRegister}/>
+                        </Route>
 
-                    <Login/>
+                        <Route path="/sign-in">
+                            <Header text="Регистрация" link="/sign-up"/>
+                            <Login onLogin={handleLogin}/>
+                        </Route>
 
-                    <Register/>
+                        <ProtectedRoute
+                            path="/"
+                            loggedIn={loggedIn}
+                            component={Header}
 
-                    <Main onEditProfile={handleEditProfileClick}
-                          onAddPlace={handleAddPlaceClick}
-                          onEditAvatar={handleEditAvatarClick}
-                          onCardClick={handleCardClick}
-                          cards={cards}
-                          onCardLike={handleCardLike}
-                          onCardDelete={handleDeleteCardClick}
-                          onCardDataRead={cardDataRead}
-                          onButtonTextRead={buttonTextRead}
-                    />
+                            email="привет"
+                            text="Выйти"
+                            link="/sign-in"
+                        />
+
+                        <ProtectedRoute
+                            path="/"
+                            loggedIn={loggedIn}
+                            component={Main}
+
+                            onEditProfile={handleEditProfileClick}
+                            onAddPlace={handleAddPlaceClick}
+                            onEditAvatar={handleEditAvatarClick}
+                            onCardClick={handleCardClick}
+                            cards={cards}
+                            onCardLike={handleCardLike}
+                            onCardDelete={handleDeleteCardClick}
+                            onCardDataRead={cardDataRead}
+                            onButtonTextRead={buttonTextRead}
+                        />
+                    </Switch>
 
                     <Footer/>
 
-                    <InfoTooltip onClose={closeAllPopups}/>
+                    <InfoTooltip isOpen={popupInfoTooltipOpen} onClose={closeAllPopups} popupText={infoTooltipText}
+                                 popupImg={infoTooltipImg} name='infoTooltip'/>
 
                     <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
 

@@ -2,27 +2,49 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 function Register(props) {
+
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
+
+    function handleChangeEmail(e) {
+        setEmail(e.target.value);
+    }
+
+    function handleChangeLinkPassword(e) {
+        setPassword(e.target.value);
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        props.onRegister({email, password});
+
+        setEmail('');
+        setPassword('');
+    }
+
+
+
     return (
         <section className="start-page">
             <h2 className="start-page__title">Регистрация</h2>
-            <form className="form" name="register" onSubmit={props.onSubmit}>
+            <form className="form" name="register" onSubmit={handleSubmit}>
                 <div className="form__section">
                     <label htmlFor="email" className="form__label"></label>
-                    <input type="email" className="form__item form__item_type_start-page form__item_type_email" id="email" name="email"
-                           placeholder="Email" required minLength="2" maxLength="40"
-                    />
+                    <input type="email" className="form__item form__item_type_start-page form__item_type_email"
+                           id="email" name="email" placeholder="Email" required minLength="2" maxLength="40"
+                           value={email || ''} onChange={handleChangeEmail}/>
                     <span className="form__input-error" id="email-error"></span>
                 </div>
                 <div className="form__section">
                     <label htmlFor="password" className="form__label"></label>
-                    <input type="text" className="form__item form__item_type_start-page form__item_type_password" id="password" name="password"
-                           placeholder="Пароль" required minLength="2" maxLength="200"
-                    />
+                    <input type="password" className="form__item form__item_type_start-page form__item_type_password"
+                           id="password" name="password" placeholder="Пароль" required minLength="5" maxLength="15"
+                           value={password || ''} onChange={handleChangeLinkPassword}/>
                     <span className="form__input-error" id="password-error"></span>
                 </div>
                 <button type="submit" className="form__save form__save_type_start-page">Зарегистрироваться</button>
             </form>
-            <Link exact to="/login" className="start-page__login-link">Уже зарегистрированы? Войти</Link>
+            <Link to="/sign-in" className="start-page__login-link">Уже зарегистрированы? Войти</Link>
         </section>
     );
 }

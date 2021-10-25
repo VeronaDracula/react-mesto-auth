@@ -2,7 +2,6 @@
     width: 104px;
     height: 25px;
     padding-left: 27px;
-    padding-bottom: 27px;
 }
 
 @media screen and (min-width: 1024px) {
@@ -11,6 +10,5 @@
         height: 33px;
         padding-left: 0;
         align-self: flex-start;
-        padding-bottom: 37px;
     }
 }
