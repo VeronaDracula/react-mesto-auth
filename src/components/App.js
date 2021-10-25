@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 
@@ -33,6 +33,8 @@ function App() {
     const [currentUser, setCurrentUser] = React.useState({});
 
     const [loggedIn, setLoggedIn] =React.useState(false);
+
+    const [userEmail, setUserEmail] =React.useState('');
 
     const [infoTooltipImg, setInfoTooltipImg] =React.useState(imgLoginYes);
     const [infoTooltipText, setInfoTooltipText] =React.useState('Вы успешно зарегистрировались!');
@@ -143,30 +145,6 @@ function App() {
             });
     }
 
-    //регистрация
-    function handleRegister({email, password}) {
-        apiAuth
-            .register({email, password})
-            .then(response => {
-                console.log(response);
-                handleInfoTooltipOpen();
-            })
-            .catch(err => {
-                console.log(err);
-                handleInfoTooltipOpen();
-                setInfoTooltipImg(imgLoginNo);
-                setInfoTooltipText('Что-то пошло не так!\n' + 'Попробуйте ещё раз.');
-            })
-
-    }
-
-    //вход
-    function handleLogin({email, password}){
-        console.log(email, password)
-
-    }
-
-
     //запрос данных карточки
     React.useEffect(() => {
         api
@@ -242,31 +220,92 @@ function App() {
         }
     }
 
-  return (
+
+    //регистрация
+    function handleRegister({email, password}) {
+        apiAuth
+            .register({email, password})
+            .then(response => {
+                console.log(response);
+                handleInfoTooltipOpen();
+            })
+            .catch(err => {
+                console.log(err);
+                handleInfoTooltipOpen();
+                setInfoTooltipImg(imgLoginNo);
+                setInfoTooltipText('Что-то пошло не так!\n' + 'Попробуйте ещё раз.');
+            })
+    }
+
+    //вход
+    function handleLogin({email, password}){
+        apiAuth
+            .authorization({email, password})
+            .then(data => {
+                if(data.token) {
+                    const token = data.token;
+                    localStorage.setItem('jwt', token);
+                    setLoggedIn(true);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+    const history = useHistory();
+
+    React.useEffect(() => {
+        if(loggedIn === true) {
+            history.push('/');
+        }
+
+    }, [loggedIn]);
+
+    React.useEffect(() => {
+        tokenCheck();
+    }, []);
+
+    //проверка токена
+    function tokenCheck() {
+        const jwt = localStorage.getItem('jwt');
+        if (jwt){
+            // проверим токен
+            apiAuth.getContent(jwt).then((data) => {
+                if (data){
+                    setUserEmail(data.data.email);
+                    setLoggedIn(true);
+                }
+            });
+        }
+    }
+
+    function signOut(){
+        localStorage.removeItem('jwt');
+        history.push('/sign-in');
+        setLoggedIn(false);
+    }
+
+
+
+
+
+
+    return (
     <div className="App">
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
                 <div className="page__content">
+                    <Header loggedIn={loggedIn} email={userEmail} onSignOut={signOut}/>
+
                     <Switch>
                         <Route path="/sign-up">
-                            <Header text="Войти" link="/sign-in"/>
                             <Register onRegister={handleRegister}/>
                         </Route>
 
                         <Route path="/sign-in">
-                            <Header text="Регистрация" link="/sign-up"/>
                             <Login onLogin={handleLogin}/>
                         </Route>
-
-                        <ProtectedRoute
-                            path="/"
-                            loggedIn={loggedIn}
-                            component={Header}
-
-                            email="привет"
-                            text="Выйти"
-                            link="/sign-in"
-                        />
 
                         <ProtectedRoute
                             path="/"
@@ -283,6 +322,8 @@ function App() {
                             onCardDataRead={cardDataRead}
                             onButtonTextRead={buttonTextRead}
                         />
+
+
                     </Switch>
 
                     <Footer/>

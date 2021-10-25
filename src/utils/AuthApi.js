@@ -23,9 +23,30 @@ class AuthApi {
         })
     };
 
+    authorization ({email, password}) {
+        return fetch(this.url +'/signin', {
+            method: 'POST',
+            headers: {'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email, password})
+        }).then(response => {
+            return this._getResponseData(response)
+        })
+    };
 
-
-
+    getContent (token) {
+        return fetch(this.url + '/users/me', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        }).then(response => {
+            return this._getResponseData(response)
+        })
+    }
 }
 
 const baseUrl = 'https://auth.nomoreparties.co';
