@@ -7,4 +7,3 @@
 Успехов!
 
 
-https://veronadracula.github.io/react-mesto-auth/
