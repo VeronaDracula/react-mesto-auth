@@ -245,6 +245,7 @@ function App() {
                 if(data.token) {
                     const token = data.token;
                     localStorage.setItem('jwt', token);
+                    tokenCheck();
                     setLoggedIn(true);
                 }
             })
@@ -270,12 +271,17 @@ function App() {
     function tokenCheck() {
         const jwt = localStorage.getItem('jwt');
         if (jwt){
-            apiAuth.getContent(jwt).then((data) => {
+            apiAuth
+                .getContent(jwt)
+                .then((data) => {
                 if (data){
                     setUserEmail(data.data.email);
                     setLoggedIn(true);
                 }
-            });
+                })
+                .catch(err => {
+                    console.log(err);
+                })
         }
     }
 
