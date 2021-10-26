@@ -3,7 +3,6 @@ import headerLogo from '../images/logo.svg';
 import {Link, Route, Switch} from "react-router-dom";
 
 function Header(props) {
-
     return (
         <header className="header">
             <div>

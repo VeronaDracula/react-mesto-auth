@@ -270,7 +270,6 @@ function App() {
     function tokenCheck() {
         const jwt = localStorage.getItem('jwt');
         if (jwt){
-            // проверим токен
             apiAuth.getContent(jwt).then((data) => {
                 if (data){
                     setUserEmail(data.data.email);
@@ -280,16 +279,12 @@ function App() {
         }
     }
 
+    //выход
     function signOut(){
         localStorage.removeItem('jwt');
         history.push('/sign-in');
         setLoggedIn(false);
     }
-
-
-
-
-
 
     return (
     <div className="App">
